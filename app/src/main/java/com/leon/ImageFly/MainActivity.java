@@ -21,6 +21,7 @@ import java.io.InputStream;
 public class MainActivity extends AppCompatActivity {
     private static final int APP_PERMISSION_REQUEST = 102;
     private final int PICK_IMAGE_REQUEST = 1;
+    Intent intent = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         } else {
+
+
+            intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
             initializeView();
         }
     }
@@ -43,11 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
         mButton.setOnClickListener(view -> {
 
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
 
+            startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
 
         });
     }
@@ -68,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 final Uri uri = data.getData();
                 final InputStream imageStream = getContentResolver().openInputStream(uri);
                 final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-
                 createImageFromBitmap(selectedImage);
 
 
