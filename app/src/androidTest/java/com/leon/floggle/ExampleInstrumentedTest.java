@@ -7,7 +7,7 @@ package com.leon.floggle;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 
-public class ExampleInstrumentedTest {
+class ExampleInstrumentedTest {
 
     public void useAppContext() throws Exception {
         // Context of the app under test.

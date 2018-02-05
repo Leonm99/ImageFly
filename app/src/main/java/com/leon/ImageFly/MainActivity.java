@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
             fo.close();
         } catch (Exception e) {
             e.printStackTrace();
-            filename = null;
         }
     }
 }

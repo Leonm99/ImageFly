@@ -1,5 +1,6 @@
 package com.leon.ImageFly;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,8 +22,8 @@ import java.io.FileNotFoundException;
 
 public class FloatWidgetService extends Service {
 
-    boolean isLocked = false;
-    WindowManager.LayoutParams params = null;
+    private boolean isLocked = false;
+    private WindowManager.LayoutParams params = null;
     private WindowManager mWindowManager;
     private View mFloatingWidget;
 
@@ -32,6 +33,7 @@ public class FloatWidgetService extends Service {
     }
 
 
+    @SuppressLint({"ClickableViewAccessibility", "InflateParams"})
     @Override
     public void onCreate() {
         super.onCreate();
@@ -124,6 +126,7 @@ public class FloatWidgetService extends Service {
             private float initialTouchX;
             private float initialTouchY;
 
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (!isLocked) {
@@ -153,41 +156,31 @@ public class FloatWidgetService extends Service {
             }
         });
 
-        scaleButton.setOnTouchListener(new View.OnTouchListener() {
-            private int X;
-            private int Y;
-            private float TouchX;
-            private float TouchY;
-            private float LastTouchX;
-            private float LastTouchY;
+        scaleButton.setOnTouchListener((view, event) -> {
+            if (!isLocked) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        r.setBackgroundResource(R.color.colorbg);
 
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                if (!isLocked) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            r.setBackgroundResource(R.color.colorbg);
+                        return true;
+                    case MotionEvent.ACTION_UP:
 
-                            return true;
-                        case MotionEvent.ACTION_UP:
+                        r.setBackgroundResource(R.color.durchsichtig);
+                        image.setVisibility(View.VISIBLE);
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        image.setVisibility(View.INVISIBLE);
+                        android.view.ViewGroup.LayoutParams layoutParams = image.getLayoutParams();
+                        layoutParams.height = (int) (event.getRawY());
+                        layoutParams.width = (int) (event.getRawX());
+                        r.updateViewLayout(image, layoutParams);
 
-                            r.setBackgroundResource(R.color.durchsichtig);
-                            image.setVisibility(View.VISIBLE);
-                            return true;
-                        case MotionEvent.ACTION_MOVE:
-                            image.setVisibility(View.INVISIBLE);
-                            android.view.ViewGroup.LayoutParams layoutParams = image.getLayoutParams();
-                            layoutParams.height = (int) (event.getRawY());
-                            layoutParams.width = (int) (event.getRawX());
-                            r.updateViewLayout(image, layoutParams);
+                        return true;
 
-                            return true;
-
-                    }
                 }
-
-                return false;
             }
+
+            return false;
         });
 //==================================================================================================GET_IMAGE=================
 
